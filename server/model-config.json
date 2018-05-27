@@ -39,8 +39,12 @@
     "dataSource": "mongo",
     "public": true
   },
-  "verification": {
+  "WebhookFacebook": {
     "dataSource": "db",
+    "public": true
+  },
+  "message": {
+    "dataSource": "mongo",
     "public": true
   }
 }
