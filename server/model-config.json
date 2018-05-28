@@ -35,7 +35,7 @@
     "dataSource": "db",
     "public": false
   },
-  "Song": {
+  "song": {
     "dataSource": "mongo",
     "public": true
   },
@@ -44,6 +44,14 @@
     "public": true
   },
   "message": {
+    "dataSource": "mongo",
+    "public": true
+  },
+  "lyric": {
+    "dataSource": "db",
+    "public": true
+  },
+  "favoriteTrackByUser": {
     "dataSource": "mongo",
     "public": true
   }

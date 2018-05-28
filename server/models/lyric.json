@@ -1,6 +1,6 @@
 {
-  "name": "song",
-  "base": "PersistedModel",
+  "name": "lyric",
+  "base": "Model",
   "idInjection": true,
   "options": {
     "validateUpsert": true
@@ -8,10 +8,6 @@
   "properties": {
     "id": {
       "type": "number",
-      "required": true
-    },
-    "title": {
-      "type": "string",
       "required": true
     }
   },

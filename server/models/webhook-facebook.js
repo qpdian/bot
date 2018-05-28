@@ -1,41 +1,69 @@
 'use strict';
 
 const axios = require('axios');
+const messenger = require('./messenger');
+const musixmatch = require('./musixmatch');
 
-const FACEBOOK_ACCESS_TOKEN = "EAAc0hfsZCeaMBANU4PSOVr3qFzBsIHAmoRkZAHJS6nq0J8HhamqZAQC3XAEmBY6zZCZA7914uyHPBCzl3CiWOfg1D3TVhmnCZBTYYHLjXt3825De0OnfpdRZCYRZCwiX6d5kgcqWSXDyS0zapTPIoFzNUVtAyzZBp7jebZAg06FQiB8QZDZD"
-const API_AI_TOKEN = 'b95db26c455c4ed681f1a7ac0f591f5f';
+
+const API_AI_TOKEN = '8ba9992bac7245b7a06132bbc48edc10';
+
 
 
 const apiAiClient = require('apiai')(API_AI_TOKEN);
 
-
-const sendTextMessage = (senderId, text) => {
-    axios.post(
-        `https://graph.facebook.com/v2.6/me/messages?access_token=${FACEBOOK_ACCESS_TOKEN}`, {
-        recipient: { id: senderId },
-        message: { text },
-    })
-  .then(function (response) {
-    console.log(response);
-  })
-  .catch(function (error) {
-    console.log(error);
-  });
-}
   
 const processMessage = (event) => {
     const senderId = event.sender.id;
     const message = event.message.text;
-    
-    
     const apiaiSession = apiAiClient.textRequest(message, {sessionId: 'chatbot'});
     apiaiSession.on('response', (response) => {
-        const result = response.result.fulfillment.speech;
-        sendTextMessage(senderId, result);
+        const result = response.result;
+        console.log(result)
+        processResponseDialogFlow( senderId, result.fulfillment, result.metadata.intentName, result.parameters)
+        
     });
     apiaiSession.on('error', error => console.log(error));
     apiaiSession.end();
 
+}
+
+const processResponseDialogFlow = ( senderId, fulfillment, intentName , parameters) => {
+    switch( intentName ) {
+        case 'buscador':  
+            musixmatch.searchSongs(1, parameters['any'])
+                .then(response => {
+                      messenger.sendList(
+                          senderId, 
+                          transformResponseToList(
+                              response.data.message.body.track_list, 
+                              senderId)
+                      );
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+            break;
+        default :  messenger.sendMessage(senderId, { text : fulfillment.speech }) ;
+    }
+    
+}
+
+const transformResponseToList = ( songList , senderId )=> {
+    return songList.map(item => ({
+        title:  item.track.track_name ,
+        subtitle: item.track.album_name,
+        buttons: [
+              {
+                "title": "Mostrar letra",
+                "type": "web_url",
+                "url": `https://bot-ouracademy.c9users.io/api/lyrics/byTrackId?track_id=${item.track.track_id}&sender_id=${senderId}`,
+                "messenger_extensions": true,
+                "webview_height_ratio": "tall",
+                "fallback_url": `https://bot-ouracademy.c9users.io/api/lyrics/byTrackId?track_id=${item.track.track_id}&sender_id=${senderId}`           
+              }
+        ]
+    }));
+    
 }
 
 
@@ -61,11 +89,9 @@ module.exports = function(WebhookFacebook) {
     });
     
     WebhookFacebook.handleMessage = function (req, res, cb) {
-        console.log(req.body)
         if (req.body.object === 'page') {
             req.body.entry.forEach(entry => {
                 entry.messaging.forEach(event => {
-                    console.log('event', event)
                     if (event.message && event.message.text) {
                         processMessage(event);
                     }
@@ -74,7 +100,6 @@ module.exports = function(WebhookFacebook) {
         res.status(200).end();
        }
      }
-    
     WebhookFacebook.remoteMethod('handleMessage', {
         http: { verb: "post", path: "/"},
         accepts: [

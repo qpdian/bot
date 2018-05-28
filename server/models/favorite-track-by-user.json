@@ -1,17 +1,17 @@
 {
-  "name": "song",
+  "name": "favoriteTrackByUser",
   "base": "PersistedModel",
   "idInjection": true,
   "options": {
     "validateUpsert": true
   },
   "properties": {
-    "id": {
+    "userId": {
       "type": "number",
       "required": true
     },
-    "title": {
-      "type": "string",
+    "trackId": {
+      "type": "number",
       "required": true
     }
   },
