@@ -3,6 +3,8 @@
 const musixmatch = require('./musixmatch');
 const messenger = require('./messenger');
 
+
+
 module.exports = function(lyric) {
     
     lyric.byTrackId = function (req, res, cb) {
@@ -17,8 +19,8 @@ module.exports = function(lyric) {
                     senderId, 
                     [
                         {
-                            "type":"web_url",
-                            "url": `https://bot-ouracademy.c9users.io/api/lyrics/markAsFavorite?track_id=${trackId}&sender_id=${senderId}`,
+                            "type":"postback",
+                            "payload": `addFavorite?track_id=${trackId}&sender_id=${senderId}`,
                             "title":"Guardar como favorito"
                         }
                     ])
@@ -46,13 +48,16 @@ module.exports = function(lyric) {
         const senderId = req.query['sender_id'];
         const app = lyric.app
         const favorities = app.models.favoriteTrackByUser;
-        console.log(app.models)
         favorities.create({
                     "userId": senderId,
                     "trackId": trackId,
                     })
-                    .then( result  => {})
-                    .catch( err => {})
+                    .then( result  => {
+                       messenger.sendText(senderId, 'Cancion agregada como favorito') 
+                    })
+                    .catch( err => {
+                       messenger.sendText(senderId, err.message) 
+                    })
     }
     lyric.remoteMethod('markAsFavorite', {
         http: { verb: "get", },
@@ -62,5 +67,6 @@ module.exports = function(lyric) {
      ],
     });
     
-
 };
+
+

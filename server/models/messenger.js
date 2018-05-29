@@ -12,8 +12,15 @@ const messenger = {
             
         })
         .catch(function (error) {
+            console.log(error)
         
         });
+    },
+    sendText( senderId, text){
+       const body =  { 
+          "text": text
+       }
+       this.sendMessage(senderId,body)
     },
     sendButtons( senderId, buttons){
        const body =  { 
@@ -26,6 +33,7 @@ const messenger = {
               }
          }
        }
+       
        this.sendMessage(senderId,body)
     },
      sendList( senderId, list){
@@ -46,6 +54,7 @@ const messenger = {
               }
             }
         }
+         console.log ( senderId , body )
        this.sendMessage(senderId,body)
     }
 }
@@ -53,6 +62,6 @@ const messenger = {
 module.exports = messenger 
 
 
-// senderId 1750040221708437    arthur id
+// senderId 1750040221708437
 // diana id 1067280970047460
 

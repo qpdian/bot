@@ -25,6 +25,16 @@ const musixmatch = {
                     track_id : trackId
                }
               });
+    },
+    getTrackById( trackId ) {  
+        return axios.get(   
+            `${ENDPOINT}/track.get`, 
+              {
+                params: {
+                    apikey: API_MUSIXMATCH,
+                    track_id : trackId
+               }
+              });
     }
 }
 

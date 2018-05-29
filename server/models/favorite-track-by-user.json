@@ -13,8 +13,15 @@
     "trackId": {
       "type": "number",
       "required": true
+    },
+    "trackData":{
+       "type": "any"
     }
   },
+  "mixins": {
+     "Timestamp": {
+     }
+   },
   "validations": [],
   "relations": {},
   "acls": [],
