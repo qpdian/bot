@@ -2,8 +2,7 @@
 
 const musixmatch = require('../common/musixmatch');
 const eventEmitter = require('../boot/event-emitter');
-
-
+const messagesApp = require('../common/message-app')
 
 module.exports = function(track) {
     
@@ -63,7 +62,7 @@ module.exports = function(track) {
                     "trackId": trackId,
                     })
                     .then( result  => {
-                        eventEmitter.emit('sendText', senderId , 'Cancion agregada como favorito' )
+                        eventEmitter.emit('sendText', senderId , messagesApp.FAVORITIES_ADDED )
                     })
                     .catch( err => {
                         eventEmitter.emit('sendText', senderId ,  err.message )

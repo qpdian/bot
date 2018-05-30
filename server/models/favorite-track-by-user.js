@@ -1,5 +1,5 @@
 'use strict';
-const messagesError = require('../common/message-error')
+const messagesApp = require('../common/message-app')
 const ErrorApplication = require('../common/error')
 
 const musixmatch = require('../common/musixmatch');
@@ -14,7 +14,7 @@ module.exports = function(Favoritetrackbyuser) {
            },
             function(err, favorities) {
                if( favorities.length>0 ){
-                  return  next( new ErrorApplication( 409, messagesError.FAVORITIES_ALREADY_EXISTS));
+                  return  next( new ErrorApplication( 409, messagesApp.FAVORITIES_ALREADY_EXISTS));
                }else{
                     musixmatch
                         .getTrackById(ctx.instance.trackId)

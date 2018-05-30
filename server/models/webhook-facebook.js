@@ -5,9 +5,11 @@ const messenger = require('../common/messenger');
 
 const processMessage = require('../commands/process-message');
 const eventEmitter = require('../boot/event-emitter');
+const urls = require('../common/url-buttons-chatbot');
 
 eventEmitter.on('addFavorite', ( payload )=>{
-    axios.get('https://bot-ouracademy.c9users.io/api/lyrics/markAsFavorite?'+ payload)
+    console.log( `${urls.MARK_AS_FAVORITE}'?${payload}`)
+    axios.get( `${urls.MARK_AS_FAVORITE}?${payload}`)
 })
 
 eventEmitter.on('sendText', ( senderId, text )=>{
@@ -52,10 +54,10 @@ module.exports = function(WebhookFacebook) {
                     
                     console.log(event)
                     
-                        senderId = event.sender.id;
+                    senderId = event.sender.id;
+                        
+                    if ( !!event.message && event.message.text) {
                         message = event.message.text;
-                    
-                    if (event.message && event.message.text) {
                         processMessage( 
                             senderId, message , 
                             ( text ) => {
@@ -88,7 +90,3 @@ module.exports = function(WebhookFacebook) {
     });
 
 };
-/*
-processMessage(1, 'busco')
-processMessage(1, 'despacito')
-*/
