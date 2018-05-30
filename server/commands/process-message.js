@@ -1,5 +1,6 @@
 const sendFavorities = require('./send-favorities')
 const searchSongs = require('./search-songs')
+const reportQuantities = require('./report-quantity')
 
 const API_AI_TOKEN = '8ba9992bac7245b7a06132bbc48edc10';
 const apiAiClient = require('apiai')(API_AI_TOKEN);
@@ -18,6 +19,7 @@ const processMessage = ( sessionId, text, responseText, responseList , responseB
         
         if( result.actionIncomplete ){
             responseText && responseText( fulfillment.speech );
+       
         }else{
             
             switch( intentName ) {
@@ -28,6 +30,14 @@ const processMessage = ( sessionId, text, responseText, responseList , responseB
                         sessionId, 
                         ( contentAsList ) => { responseList(contentAsList) },
                         ( contentAsText ) => { responseText(contentAsText) }); 
+                    break;
+                case 'reportesCantidad': 
+                    console.log(parameters)
+                    reportQuantities( parameters['tipoEntidad'], parameters['date'] )
+                    .then( message =>{
+                       responseText( message );  
+                        
+                    })
                     break;
                 default :  responseText( fulfillment.speech ); 
             }
