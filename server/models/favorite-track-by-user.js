@@ -2,7 +2,8 @@
 const messagesError = require('../common/message-error')
 const ErrorApplication = require('../common/error')
 
-const musixmatch = require('./musixmatch');
+const musixmatch = require('../common/musixmatch');
+
 module.exports = function(Favoritetrackbyuser) {
     
     Favoritetrackbyuser.observe('before save',  function(ctx , next) {

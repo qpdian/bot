@@ -1,23 +1,34 @@
 'use strict';
 
-const musixmatch = require('./musixmatch');
-const messenger = require('./messenger');
+const musixmatch = require('../common/musixmatch');
+const eventEmitter = require('../boot/event-emitter');
 
 
 
-module.exports = function(lyric) {
+module.exports = function(track) {
     
-    lyric.byTrackId = function (req, res, cb) {
+     track.beforeRemote('getLyricByTrackId', function(ctx , unused, next) {
+       track.create(
+           {
+             id: ctx.req.query.track_id, name: ctx.req.query.track_name
+           })
+           .then( result  => {
+               return next();  
+            })
+           .catch( err => {
+               return next();  
+            })
+     });
+    
+    track.getLyricByTrackId = function (req, res, cb) {
         
         const trackId = req.query['track_id'];
         const senderId = req.query['sender_id'];
-        console.log(trackId)
         musixmatch
             .getLyricByTrackId(trackId)
             .then(response => {
-                messenger.sendButtons(
-                    senderId, 
-                    [
+                
+                eventEmitter.emit('sendButtons', senderId,  [
                         {
                             "type":"postback",
                             "payload": `addFavorite?track_id=${trackId}&sender_id=${senderId}`,
@@ -27,14 +38,13 @@ module.exports = function(lyric) {
                 res.redirect( response.data.message.body.lyrics.backlink_url )
             })
             .catch(error => {
-                console.log((error))
                  res
                  .status(200)
                  .send( '<div>'+ 'Ups, no se encontro la letra de la cancion q buscabas'+'</div>' );
             })
        
     }
-    lyric.remoteMethod('byTrackId', {
+    track.remoteMethod('getLyricByTrackId', {
         http: { verb: "get", },
         accepts: [
         {arg: 'req', type: 'object', 'http': {source: 'req'}},
@@ -42,24 +52,24 @@ module.exports = function(lyric) {
      ],
     });
     
-    lyric.markAsFavorite = function (req, res, cb) {
+    track.markAsFavorite = function (req, res, cb) {
         
         const trackId = req.query['track_id'];
         const senderId = req.query['sender_id'];
-        const app = lyric.app
+        const app = track.app
         const favorities = app.models.favoriteTrackByUser;
         favorities.create({
                     "userId": senderId,
                     "trackId": trackId,
                     })
                     .then( result  => {
-                       messenger.sendText(senderId, 'Cancion agregada como favorito') 
+                        eventEmitter.emit('sendText', senderId , 'Cancion agregada como favorito' )
                     })
                     .catch( err => {
-                       messenger.sendText(senderId, err.message) 
+                        eventEmitter.emit('sendText', senderId ,  err.message )
                     })
     }
-    lyric.remoteMethod('markAsFavorite', {
+    track.remoteMethod('markAsFavorite', {
         http: { verb: "get", },
         accepts: [
         {arg: 'req', type: 'object', 'http': {source: 'req'}},

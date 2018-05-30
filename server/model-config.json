@@ -35,10 +35,6 @@
     "dataSource": "db",
     "public": false
   },
-  "song": {
-    "dataSource": "mongo",
-    "public": true
-  },
   "WebhookFacebook": {
     "dataSource": "db",
     "public": true
@@ -47,7 +43,7 @@
     "dataSource": "mongo",
     "public": true
   },
-  "lyric": {
+  "track": {
     "dataSource": "db",
     "public": true
   },

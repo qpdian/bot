@@ -1,107 +1,25 @@
 'use strict';
 
 const axios = require('axios');
-const messenger = require('./messenger');
-const musixmatch = require('./musixmatch');
-const app = require('../server.js');
+const messenger = require('../common/messenger');
+
+const processMessage = require('../commands/process-message');
 const eventEmitter = require('../boot/event-emitter');
 
 eventEmitter.on('addFavorite', ( payload )=>{
     axios.get('https://bot-ouracademy.c9users.io/api/lyrics/markAsFavorite?'+ payload)
 })
 
+eventEmitter.on('sendText', ( senderId, text )=>{
+       messenger.sendText(senderId, text ) ;
+})
+eventEmitter.on('sendList', ( senderId, list )=>{
+       messenger.sendList(senderId, list ) ;
+})
+eventEmitter.on('sendButtons', ( senderId, buttons )=>{
+       messenger.sendButtons(senderId, buttons ) ;
+})
 
-
-const API_AI_TOKEN = '8ba9992bac7245b7a06132bbc48edc10';
-
-
-
-const apiAiClient = require('apiai')(API_AI_TOKEN);
-
-
-const sendFavorities = ( senderId ) => {
-    //console.log( app.models)
-     app.models.favoriteTrackByUser.find(
-           {
-               where: { userId: senderId}
-           },
-            function(err, favorities) {
-                
-                const favoritiesPresenter = favorities
-                       .filter ( item => item.trackData )
-                       .map( item => (  transformTrackToPresenter( item.trackData, senderId )))
-                       
-                       console.log( favoritiesPresenter )
-                if( favoritiesPresenter.length>0 ){
-                    if(favoritiesPresenter.length>3 ){
-                        messenger.sendList( senderId, favoritiesPresenter) 
-                    }else{
-                        messenger.sendText( senderId, favoritiesPresenter.reduce(( total, prev)=>{ return total + '- '+ prev.title +'\n'},'' )) 
-                    }
-                    
-                        
-                }else{
-                   messenger.sendText( senderId, 'No tienes canciones favoritas')
-               }
-            });
-    
-}
-  
-const processMessage = (event) => {
-    const senderId = event.sender.id;
-    const message = event.message.text;
-    const apiaiSession = apiAiClient.textRequest(message, {sessionId: 'chatbot'});
-    apiaiSession.on('response', (response) => {
-        const result = response.result;
-        processResponseDialogFlow( senderId, result.fulfillment, result.metadata.intentName, result.parameters)
-        
-    });
-    apiaiSession.on('error', error => console.log(error));
-    apiaiSession.end();
-
-}
-
-const processResponseDialogFlow = ( senderId, fulfillment, intentName , parameters) => {
-    switch( intentName ) {
-        case 'buscador':  
-            musixmatch.searchSongs(1, parameters['any'])
-                .then(response => {
-                      messenger.sendList(
-                          senderId, 
-                          response.data.message.body.track_list.map(item => (  transformTrackToPresenter( item.track, senderId )))
-                      );
-                })
-                .catch(error => {
-                    console.log(error);
-                });
-            break;
-        case 'favoritos':  sendFavorities(senderId); break;
-        default :  messenger.sendText(senderId, fulfillment.speech ) ;
-    }
-    
-}
-
-const transformTrackToPresenter = ( track, senderId) => {
-    
-    return {
-        title:  track.track_name ,
-        subtitle: track.album_name,
-        buttons: [
-              {
-                "title": "Mostrar letra",
-                "type": "web_url",
-                "url": `https://bot-ouracademy.c9users.io/api/lyrics/byTrackId?track_id=${track.track_id}&sender_id=${senderId}`,
-                "messenger_extensions": true,
-                "webview_height_ratio": "tall",
-                "fallback_url": `https://bot-ouracademy.c9users.io/api/lyrics/byTrackId?track_id=${track.track_id}&sender_id=${senderId}`           
-              }
-        ]
-    }
-}
-
-const transformResponseToList = ( songList , senderId )=> {
-    return songList.map(item => (  transformTrackToPresenter( item.track, senderId )));
-}
 
 
 
@@ -126,12 +44,29 @@ module.exports = function(WebhookFacebook) {
     });
     
     WebhookFacebook.handleMessage = function (req, res, cb) {
+        var senderId = '';
+        var message = '';
         if (req.body.object === 'page') {
             req.body.entry.forEach(entry => {
                 entry.messaging.forEach(event => {
                     
+                    console.log(event)
+                    
+                        senderId = event.sender.id;
+                        message = event.message.text;
+                    
                     if (event.message && event.message.text) {
-                        processMessage(event);
+                        processMessage( 
+                            senderId, message , 
+                            ( text ) => {
+                                 messenger.sendText(senderId, text ) ;
+                            },
+                             ( list ) => {
+                                 messenger.sendList(senderId, list ) ;
+                            },
+                             ( buttons ) => {
+                                 messenger.sendButtons(senderId, buttons ) ;
+                            })
                     }
                     
                     if( event.postback){
@@ -153,3 +88,7 @@ module.exports = function(WebhookFacebook) {
     });
 
 };
+/*
+processMessage(1, 'busco')
+processMessage(1, 'despacito')
+*/

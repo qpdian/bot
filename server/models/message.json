@@ -7,7 +7,15 @@
   },
   "properties": {
     "content": {
-      "type": "string",
+      "type": "any",
+      "required": true
+    },
+    "receiverId": {
+      "type": "number",
+      "required": true
+    },
+     "senderId": {
+      "type": "number",
       "required": true
     }
   },

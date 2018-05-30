@@ -1,19 +1,23 @@
 {
-  "name": "song",
+  "name": "track",
   "base": "PersistedModel",
   "idInjection": true,
   "options": {
     "validateUpsert": true
   },
   "properties": {
-    "id": {
-      "type": "number",
-      "required": true
+    "id":{
+       "type": "string",
+       "id": true,
+       "forceId" : false
     },
-    "title": {
-      "type": "string",
-      "required": true
+    "name":{
+       "type": "string"
     }
+  },
+  "mixins": {
+     "Timestamp": {
+     }
   },
   "validations": [],
   "relations": {},
