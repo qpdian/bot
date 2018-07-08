@@ -6,6 +6,7 @@ const saveMessage = require('../commands/save-message')
 const URL_FACEBOOK = `https://graph.facebook.com/v2.6/me/messages?access_token=${FACEBOOK_ACCESS_TOKEN}`;
 const messenger = {
     sendMessage(senderId, receiverId , message ) {
+        console.log(message)
         axios.post(
             URL_FACEBOOK, {
             recipient: { id: senderId },
