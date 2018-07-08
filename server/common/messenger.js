@@ -15,7 +15,7 @@ const messenger = {
             //saveMessage(receiverId, senderId, message)
         })
         .catch(function (error) {
-            console.log( "eror post", Object.keys((error))
+            console.log( "eror post", Object.keys(error))
         });
     },
     sendText( senderId, receiverId,  text){
