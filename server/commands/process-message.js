@@ -2,7 +2,7 @@ const sendFavorities = require('./send-favorities')
 const searchSongs = require('./search-songs')
 const reportQuantities = require('./report-quantity')
 
-const API_AI_TOKEN = '8ba9992bac7245b7a06132bbc48edc10';
+const API_AI_TOKEN = process.env.APIAI_TOKEN;
 const apiAiClient = require('apiai')(API_AI_TOKEN);
 
 
@@ -11,6 +11,7 @@ const apiAiClient = require('apiai')(API_AI_TOKEN);
 const processMessage = ( sessionId, text, initialCallback, responseText, responseList , responseButtons ) => {
  
     const apiaiSession = apiAiClient.textRequest(text, {sessionId: sessionId });
+    
     apiaiSession.on('response', (response) => {
         const result = response.result;
         const intentName = result.metadata.intentName;
@@ -29,6 +30,7 @@ const processMessage = ( sessionId, text, initialCallback, responseText, respons
                         response.data, 
                         `Esta es la lista de canciones que coincieron con la canción: ${parameters['any']} `, 
                         response.payload) }); break;
+                        
                 case 'favoritos':  
                     sendFavorities(
                         sessionId, 

@@ -1,5 +1,5 @@
 const axios = require('axios');
-const FACEBOOK_ACCESS_TOKEN = "EAAc0hfsZCeaMBALCQmAUOs2WYCTc4pZCYrt28jiKtmRkiglH6lhOHlOQCNnyuphq3027JhFBQW8XUD355Mj29F27P0bhccoo7mEaZBVt3uVii5jwNFLv0B6XvEUO5QZAZCcMQZC36doBcASQFUQ1kB6guHZAu6d6ZAFvTwTrOGEaUAZDZD"
+const FACEBOOK_ACCESS_TOKEN =  process.env.FACEBOOK_TOKEN;
 
 const saveMessage = require('../commands/save-message') 
 
@@ -12,7 +12,7 @@ const messenger = {
             message:  message,
         })
         .then(function (response) {
-            saveMessage(receiverId, senderId, message)
+            //saveMessage(receiverId, senderId, message)
         })
         .catch(function (error) {
             console.log(error)

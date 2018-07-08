@@ -1,5 +1,5 @@
 const axios = require('axios');
-const API_MUSIXMATCH = '562c0a6fd6b6aa3162b2c67bd9dcf79a'
+const API_MUSIXMATCH = process.env.MUSIXMATCH_TOKEN;
 const ENDPOINT = 'http://api.musixmatch.com/ws/1.1'
 const musixmatch = {
     
