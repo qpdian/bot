@@ -8,7 +8,7 @@ const apiAiClient = require('apiai')(API_AI_TOKEN);
 
 
 
-const processMessage = ( sessionId, text, responseText, responseList , responseButtons ) => {
+const processMessage = ( sessionId, text, initialCallback, responseText, responseList , responseButtons ) => {
  
     const apiaiSession = apiAiClient.textRequest(text, {sessionId: sessionId });
     apiaiSession.on('response', (response) => {
@@ -21,18 +21,27 @@ const processMessage = ( sessionId, text, responseText, responseList , responseB
             responseText && responseText( fulfillment.speech );
        
         }else{
-            
+            initialCallback()
             switch( intentName ) {
                 case 'buscador':   
-                    searchSongs( parameters['any'], sessionId ).then( songs => { responseList(songs) }); break;
+                    searchSongs( parameters['any'], sessionId ,1)
+                    .then( response => { responseList( 
+                        response.data, 
+                        `Esta es la lista de canciones que coincieron con la canción: ${parameters['any']} `, 
+                        response.payload) }); break;
                 case 'favoritos':  
                     sendFavorities(
                         sessionId, 
-                        ( contentAsList ) => { responseList(contentAsList) },
-                        ( contentAsText ) => { responseText(contentAsText) }); 
+                        ( response ) => { 
+                            responseList(
+                                response.data,
+                                `Èstas es la lista de canciones favoritas`,
+                                response.payload
+                                ) },
+                        ( contentAsText ) => { responseText(contentAsText) },
+                        1); 
                     break;
                 case 'reportesCantidad': 
-                    console.log(parameters)
                     reportQuantities( parameters['tipoEntidad'], parameters['date'] )
                     .then( message =>{
                        responseText( message );  

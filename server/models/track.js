@@ -20,6 +20,7 @@ module.exports = function(track) {
      });
     
     track.getLyricByTrackId = function (req, res, cb) {
+        console.log( req.query)
         
         const trackId = req.query['track_id'];
         const senderId = req.query['sender_id'];
@@ -27,10 +28,12 @@ module.exports = function(track) {
             .getLyricByTrackId(trackId)
             .then(response => {
                 
+                
+                
                 eventEmitter.emit('sendButtons', senderId,  [
                         {
                             "type":"postback",
-                            "payload": `addFavorite?track_id=${trackId}&sender_id=${senderId}`,
+                            "payload": JSON.stringify( { name : 'addFavorite', trackId: trackId , senderId : senderId }),
                             "title":"Guardar como favorito"
                         }
                     ])
@@ -52,6 +55,8 @@ module.exports = function(track) {
     });
     
     track.markAsFavorite = function (req, res, cb) {
+        
+        console.log(req.query)
         
         const trackId = req.query['track_id'];
         const senderId = req.query['sender_id'];

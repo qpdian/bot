@@ -1,28 +1,30 @@
 const axios = require('axios');
 const FACEBOOK_ACCESS_TOKEN = "EAAc0hfsZCeaMBALCQmAUOs2WYCTc4pZCYrt28jiKtmRkiglH6lhOHlOQCNnyuphq3027JhFBQW8XUD355Mj29F27P0bhccoo7mEaZBVt3uVii5jwNFLv0B6XvEUO5QZAZCcMQZC36doBcASQFUQ1kB6guHZAu6d6ZAFvTwTrOGEaUAZDZD"
 
+const saveMessage = require('../commands/save-message') 
+
+const URL_FACEBOOK = `https://graph.facebook.com/v2.6/me/messages?access_token=${FACEBOOK_ACCESS_TOKEN}`;
 const messenger = {
-    sendMessage(senderId, message ) {
+    sendMessage(senderId, receiverId , message ) {
         axios.post(
-            `https://graph.facebook.com/v2.6/me/messages?access_token=${FACEBOOK_ACCESS_TOKEN}`, {
+            URL_FACEBOOK, {
             recipient: { id: senderId },
             message:  message,
         })
         .then(function (response) {
-            
+            saveMessage(receiverId, senderId, message)
         })
         .catch(function (error) {
             console.log(error)
-        
         });
     },
-    sendText( senderId, text){
+    sendText( senderId, receiverId,  text){
        const body =  { 
           "text": text
        }
-       this.sendMessage(senderId,body)
+       this.sendMessage(senderId, receiverId, body)
     },
-    sendButtons( senderId, buttons){
+    sendButtons( senderId, receiverId, buttons){
        const body =  { 
           "attachment":{
               "type":"template",
@@ -34,9 +36,9 @@ const messenger = {
          }
        }
        
-       this.sendMessage(senderId,body)
+       this.sendMessage(senderId, receiverId, body)
     },
-     sendList( senderId, list){
+     sendList( senderId, receiverId, list , payload){
        const body =  { 
            "attachment": {
               "type": "template",
@@ -48,18 +50,51 @@ const messenger = {
                   {
                     "title": "Ver más",
                     "type": "postback",
-                    "payload": "payload"            
+                    "payload": payload           
                   }
                 ]  
               }
             }
         }
-         console.log ( senderId , body )
-       this.sendMessage(senderId,body)
+       this.sendMessage(senderId, receiverId, body)
+    },
+    
+    sendAction( to , actionName ){
+        axios.post(
+            URL_FACEBOOK, {
+            recipient: { id: to },
+            sender_action: actionName
+        })
+        .then(function (response) {
+     
+        })
+        .catch(function (error) {
+            console.log(error)
+        });
+    },
+    
+    sendGreeting(){
+        
+        axios.post(
+            URL_FACEBOOK, 
+              { "greeting": [
+                {
+                  "locale":"default",
+                  "text":"Hello!" 
+                }, 
+                {
+                  "locale":"en_US",
+                  "text": "Hola{{user_first_name}}!"
+                }
+              ]
+            }
+         )
     }
+        
 }
 
 module.exports = messenger 
+//messenger.sendGreeting()
 
 
 // senderId 1750040221708437

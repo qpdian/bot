@@ -5,19 +5,21 @@
   "options": {
     "validateUpsert": true
   },
-  "properties": {
-    "id":{
-       "type": "string",
-       "id": true,
-       "forceId" : false
-    },
-    "name":{
-       "type": "string"
-    }
-  },
   "mixins": {
-     "Timestamp": {
-     }
+    "Timestamp": {}
+  },
+  "properties": {
+    "id": {
+      "type": "string",
+      "id": true,
+      "forceId": false
+    },
+    "name": {
+      "type": "string"
+    },
+    "searcherQuantity": {
+      "type": "number"
+    }
   },
   "validations": [],
   "relations": {},

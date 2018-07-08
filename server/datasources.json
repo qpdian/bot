@@ -4,13 +4,13 @@
     "connector": "memory"
   },
   "mongo": {
-    "host": "ouracademy-bot-6163358",
-    "port": 27017,
+    "host": "ds131721.mlab.com",  
+    "port": 31721,
     "url": "",
     "database": "chatbot",
-    "password": "",
+    "password": "ouracademy1",
     "name": "mongo",
-    "user": "",
+    "user": "chatbot",
     "connector": "mongodb"
   }
 }

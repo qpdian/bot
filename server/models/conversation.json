@@ -1,5 +1,5 @@
 {
-  "name": "favoriteTrackByUser",
+  "name": "conversation",
   "base": "PersistedModel",
   "idInjection": true,
   "options": {
@@ -9,16 +9,10 @@
     "Timestamp": {}
   },
   "properties": {
-    "userId": {
-      "type": "number",
-      "required": true
-    },
-    "trackId": {
-      "type": "number",
-      "required": true
-    },
-    "trackData": {
-      "type": "any"
+   "id": {
+      "type": "any",
+      "required": true,
+      "id": true
     }
   },
   "validations": [],

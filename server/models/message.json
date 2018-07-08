@@ -5,6 +5,9 @@
   "options": {
     "validateUpsert": true
   },
+  "mixins": {
+    "Timestamp": {}
+  },
   "properties": {
     "content": {
       "type": "any",
@@ -14,7 +17,7 @@
       "type": "number",
       "required": true
     },
-     "senderId": {
+    "senderId": {
       "type": "number",
       "required": true
     }

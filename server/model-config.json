@@ -50,5 +50,9 @@
   "favoriteTrackByUser": {
     "dataSource": "mongo",
     "public": true
+  },
+  "conversation": {
+    "dataSource": "mongo",
+    "public": true
   }
 }
