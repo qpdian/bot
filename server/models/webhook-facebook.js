@@ -65,6 +65,7 @@ module.exports = function(WebhookFacebook) {
         var receiverId = '';
         var message = '';
         if (req.body.object === 'page') {
+            console.log(  req.body );
             req.body.entry.forEach(entry => {
                 entry.messaging.forEach(event => {
                     senderId = event.sender.id;
