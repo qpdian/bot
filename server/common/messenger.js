@@ -94,9 +94,5 @@ const messenger = {
 }
 
 module.exports = messenger 
-//messenger.sendGreeting()
 
-
-// senderId 1750040221708437
-// diana id 1067280970047460
 
