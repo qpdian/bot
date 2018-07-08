@@ -1,5 +1,5 @@
 module.exports = {
-  db: {
+  mongo: {
     connector: 'mongodb',
     hostname: process.env.DB_HOST ,
     port: process.env.DB_PORT ,
