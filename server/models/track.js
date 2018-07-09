@@ -28,7 +28,7 @@ module.exports = function(track) {
             .getLyricByTrackId(trackId)
             .then(response => {
                 
-                console.log( response.data.message.body.lyrics.backlink_url)
+                console.log( "url", response.data.message.body.lyrics.backlink_url)
                 
                 
                 
