@@ -28,6 +28,8 @@ module.exports = function(track) {
             .getLyricByTrackId(trackId)
             .then(response => {
                 
+                console.log( response.data.message.body.lyrics.backlink_url)
+                
                 
                 
                 eventEmitter.emit('sendButtons', senderId,  [
